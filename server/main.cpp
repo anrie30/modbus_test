@@ -1,32 +1,35 @@
+#include <signal.h>
 #include <QCoreApplication>
 //#include <QLoggingCategory>
 #include "modbusserver.h"
 
-int exitCode = 0;
-int execute = 0;
-
-void quit(int code)
+void sigHandler(int signal)
 {
-    qDebug() << __func__ << code;
-    exitCode = code;
-    if(execute > 0)
-        qApp->exit(code);
+    qDebug() << __func__ << signal;
+    if(signal == SIGABRT || signal == SIGSEGV) {
+        qApp->exit(signal);
+    }
     else
-        execute = -1;
+        qApp->exit(0);
 }
 
 int main(int argc, char *argv[])
 {
+    int exitCode = 0;
+
+    signal(SIGINT, sigHandler);
+    signal(SIGTERM, sigHandler);
+    signal(SIGABRT, sigHandler);
+    signal(SIGSEGV, sigHandler);
+    signal(SIGKILL, sigHandler);
+    signal(SIGQUIT, sigHandler);
+
 //    QLoggingCategory::setFilterRules(QStringLiteral("qt.modbus* = true"));
     QCoreApplication a(argc, argv);
     ModbusServer ms;
-    QObject::connect(&ms, &ModbusServer::quit, &quit);
     ms.startConnection();
 
-    if(execute >= 0) {
-        execute = 1;
-        exitCode = a.exec();
-    }
+    exitCode = a.exec();
 
     qDebug() << "Остановка" << argv[0];
     return exitCode;

@@ -1,23 +1,22 @@
 #ifndef ModbusServer_H
 #define ModbusServer_H
 
-//#include <modbus/modbus.h>
 #include <QModbusTcpServer>
 #include <QObject>
-#include <QUrl>
 #include <QDebug>
 #include <QFile>
 #include <QSettings>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QElapsedTimer>
+#include <QTimer>
 
-#define CONF "./server.json"
+#define CONF "../conf/server.json"
 #define HOST "host"
 #define PORT "port"
 #define ADDRESS "address"
 #define HOLDING "holding_registers"
-#define FIRST "first_start"
 
 class ModbusServer : public QObject
 {
@@ -29,22 +28,20 @@ public:
     void startConnection();
 
 private:
-//    uint16_t *tab_registers_;
-//    modbus_mapping_t* mb_mapping_;
-//    modbus_t *ctx_;
-//    uint32_t timeoutSec_;
-//    uint32_t timeoutUSec_;
-    QModbusServer *server_ = nullptr;
+    QTimer timer_;
+    QModbusTcpServer *server_ = nullptr;
     QModbusRequest *request_ = nullptr;
     QVector<quint16> registers_;
+    QElapsedTimer eTimer_;
     QString host_;
     uint port_;
     uint serverAddress_ = 0;
+    uint interval_ = 1000;
 
     void setModbus();
     void save();
-    void load();
-//    void ModbusTcpServer();
+    bool load();
+    void setRegisters(QVector<uint16_t> tab_registers);
 
 private slots:
     void onStateChanged(int state);

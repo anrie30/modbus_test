@@ -1,4 +1,4 @@
-QT += core gui widgets
+QT += widgets network
 
 CONFIG += c++11
 
@@ -8,10 +8,12 @@ MOC_DIR = ./obj
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    tcpclient.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    tcpclient.h
 
 FORMS += \
     mainwindow.ui

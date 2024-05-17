@@ -1,4 +1,4 @@
-QT += serialbus widgets
+QT += serialbus widgets network
 
 TEMPLATE = app
 CONFIG += c++11
@@ -9,10 +9,14 @@ MOC_DIR = ./obj
 
 SOURCES += \
     main.cpp\
-    mainwindow.cpp
+    mainwindow.cpp \
+    modbusclient.cpp \
+    tcpserver.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    modbusclient.h \
+    tcpserver.h
 
 FORMS += \
     mainwindow.ui

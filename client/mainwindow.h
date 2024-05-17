@@ -2,21 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QModbusDataUnit>
-#include <QModbusTcpClient>
-//#include <QModbusRtuSerialMaster>
-//#include <QStandardItemModel>
 #include <QStatusBar>
-//#include <QUrl>
 #include <QSettings>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QJsonDocument>
+#include <QTimer>
+#include "modbusclient.h"
 
 QT_BEGIN_NAMESPACE
-
-class QModbusClient;
-class QModbusReply;
 
 namespace Ui {
     class MainWindow;
@@ -24,12 +15,12 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#define CONF "./server.ini"
-#define SRV_HOST "host"
-#define SRV_PORT "port"
-#define SRV_ADDRESS "address"
-#define HOLDING "holding_registers"
-#define FIRST "first_start"
+#define CONF     "../conf/client.ini"
+#define SRV_CONF "../conf/client.json"
+#define START_REG   "startRegister"
+#define REG_NUM     "registersCount"
+#define INTERVAL    "autoReadInterval"
+#define GEOMETRY    "geometry"
 
 class MainWindow : public QMainWindow
 {
@@ -40,23 +31,21 @@ public:
     ~MainWindow();
 
 private:
+    Ui::MainWindow *ui = nullptr;
+    ModbusClient *modbusClient = nullptr;
+    QTimer timer;
+
     void initActions();
-    void setConnection();
-    QModbusDataUnit readRequest() const;
+    void initModbus();
     void load();
     void save();
+    ulong elapsedSecs();
 
 private slots:
     void onConnectButtonClicked();
-    void onModbusStateChanged(int state);
-
     void onReadButtonClicked();
-    void onReadReady();
-
-private:
-    Ui::MainWindow *ui = nullptr;
-    QModbusReply *lastRequest_ = nullptr;
-    QModbusClient *client_ = nullptr;
+    void onModbusStateChanged(bool connected);
+    void onModbusReadyRead();
 };
 
 #endif // MAINWINDOW_H

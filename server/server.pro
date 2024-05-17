@@ -5,7 +5,7 @@ CONFIG += c++11
 
 LIBS += -lmodbus
 
-TARGET = ../bin/modbus_server
+TARGET = ../bin/modbus_server_qt
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
 
